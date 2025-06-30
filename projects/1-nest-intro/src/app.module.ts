@@ -10,6 +10,7 @@ import { dbConfigSchema, typeOrmConfig } from './config/database.config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 // import { RootConfigType } from './config/config.types';
 import { TypedConfigService } from './config/typed-config.service';
+// import { Task } from './tasks/task.entity';
 
 const rootConfigSchema = appConfigSchema.concat(dbConfigSchema);
 
@@ -37,6 +38,8 @@ const rootConfigSchema = appConfigSchema.concat(dbConfigSchema);
         const dbConfig = configService.get<TypeOrmModuleOptions>('database');
         return {
           ...dbConfig,
+          // entities: [Task],
+          autoLoadEntities: true,
         };
       },
     }),
