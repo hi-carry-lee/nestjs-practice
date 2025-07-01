@@ -3,52 +3,43 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { ITask, TaskStatus } from './task.model';
-import { randomUUID } from 'crypto';
+import { TaskStatus } from './task.model';
 import { CreateTaskDTO } from './create-task.dto';
 import { UpdateTaskDTO } from './update-task.dto';
+import { Task } from './task.entity';
+import { Repository } from 'typeorm/repository/Repository';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TasksService {
-  private tasks: ITask[] = [
-    {
-      id: '19fabe0c-5420-44a1-99e4-40e01f7fee72',
-      title: 'taskA',
-      desc: 'task A',
-      status: TaskStatus.OPEN,
-    },
-    {
-      id: randomUUID(),
-      title: 'taskB',
-      desc: 'task B',
-      status: TaskStatus.IN_PROGRESS,
-    },
-  ];
+  constructor(
+    @InjectRepository(Task)
+    private taskRepository: Repository<Task>,
+  ) {}
 
-  findAll(): ITask[] {
-    return this.tasks;
+  public findAll(): Promise<Task[]> {
+    return this.taskRepository.find();
   }
 
-  findOne(id: string): ITask {
-    const task = this.findOneOrFail(id);
-    return task;
+  public findOne(id: string): Promise<Task> {
+    return this.findOneOrFail(id);
   }
 
-  createTask(task: CreateTaskDTO): ITask {
-    const newTask: ITask = { ...task, id: randomUUID() };
-    this.tasks.push(newTask);
-    return newTask;
+  public async createTask(task: CreateTaskDTO): Promise<Task> {
+    return await this.taskRepository.save(task);
   }
 
-  updateTaskStatus(id: string, status: TaskStatus): ITask {
-    const task = this.findOneOrFail(id);
+  public async updateTaskStatus(id: string, status: TaskStatus): Promise<Task> {
+    const task = await this.findOneOrFail(id);
     task.status = status;
-    return task;
+    return this.taskRepository.save(task);
   }
 
-  updateTask(id: string, updatedTask: UpdateTaskDTO): ITask {
-    console.log({ updatedTask });
-    const task = this.findOneOrFail(id);
+  public async updateTask(
+    id: string,
+    updatedTask: UpdateTaskDTO,
+  ): Promise<Task> {
+    const task = await this.findOneOrFail(id);
 
     if (
       updatedTask.status &&
@@ -63,12 +54,10 @@ export class TasksService {
         ([, v]) => v != null && v != undefined,
       ),
     );
-    console.log({ filteredTask });
     // 直接使用展开运算符，更简洁
     const newTask = { ...task, ...filteredTask };
 
-    this.tasks = this.tasks.map((t) => (t.id === id ? newTask : t));
-    return newTask;
+    return this.taskRepository.save(newTask);
   }
 
   private isValidStatusTransition(
@@ -89,8 +78,8 @@ export class TasksService {
     );
   }
 
-  private findOneOrFail(id: string): ITask {
-    const task = this.tasks.find((t) => t.id === id);
+  private async findOneOrFail(id: string): Promise<Task> {
+    const task = await this.taskRepository.findOneBy({ id });
     if (!task) {
       // exception is also business logic, it's recommended to throw it here, instead of return undefine;
       throw new NotFoundException('Task not found');
@@ -98,8 +87,8 @@ export class TasksService {
     return task;
   }
 
-  deleteOne(id: string): void {
-    this.findOneOrFail(id);
-    this.tasks = this.tasks.filter((task) => task.id !== id);
+  public async deleteOne(id: string): Promise<void> {
+    await this.findOneOrFail(id);
+    await this.taskRepository.delete({ id });
   }
 }

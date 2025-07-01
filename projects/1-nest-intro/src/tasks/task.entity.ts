@@ -17,7 +17,7 @@ export class Task {
     type: 'text',
     nullable: true,
   })
-  description: string;
+  desc: string;
 
   @Column({
     type: 'enum',
