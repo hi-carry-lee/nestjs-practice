@@ -11,34 +11,21 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 // import { RootConfigType } from './config/config.types';
 import { TypedConfigService } from './config/typed-config.service';
 // import { Task } from './tasks/task.entity';
+import { UsersModule } from './users/users.module';
 
 const rootConfigSchema = appConfigSchema.concat(dbConfigSchema);
 
 @Module({
   imports: [
     TasksModule,
-    // TypeOrmModule.forRoot(typeOrmConfig()),
+    UsersModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      // first
-      // useFactory: (configService: ConfigService<RootConfigType>) => ({
-      // 会提示：Expected a non-Promise value to be spreaded in an object.eslint
-      //   ...configService.get('database'),
-      // }),
-      // second
-      // useFactory: (configService: ConfigService<RootConfigType>) => {
-      //   const dbConfig = configService.get<TypeOrmModuleOptions>('database');
-      //   return {
-      //     ...dbConfig,
-      //   };
-      // },
-      // third
       useFactory: (configService: TypedConfigService) => {
         const dbConfig = configService.get<TypeOrmModuleOptions>('database');
         return {
           ...dbConfig,
-          // entities: [Task],
           autoLoadEntities: true,
         };
       },
@@ -52,7 +39,6 @@ const rootConfigSchema = appConfigSchema.concat(dbConfigSchema);
         abortEarly: true,
       },
     }),
-    // TypeOrmModule.forRoot(typeOrmConfig()),
   ],
   controllers: [AppController],
   providers: [
@@ -100,4 +86,32 @@ SLint报错的原因不是configService.get('database')真的返回了Promise，
     const dbConfig = config.get('database');
     return { ...dbConfig };
   }
+*/
+
+/*
+TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      first
+      useFactory: (configService: ConfigService<RootConfigType>) => ({
+      会提示：Expected a non-Promise value to be spreaded in an object.eslint
+        ...configService.get('database'),
+      }),
+      second
+      useFactory: (configService: ConfigService<RootConfigType>) => {
+        const dbConfig = configService.get<TypeOrmModuleOptions>('database');
+        return {
+          ...dbConfig,
+        };
+      },
+      third
+      useFactory: (configService: TypedConfigService) => {
+        const dbConfig = configService.get<TypeOrmModuleOptions>('database');
+        return {
+          ...dbConfig,
+          // entities: [Task],
+          autoLoadEntities: true,
+        };
+      },
+    }),
 */

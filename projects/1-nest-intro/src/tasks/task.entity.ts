@@ -1,5 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { TaskStatus } from './task.model';
+import { User } from 'src/users/user.entity';
+import { TaskLabel } from './task-label.entity';
 
 @Entity()
 export class Task {
@@ -25,4 +33,18 @@ export class Task {
     default: TaskStatus.OPEN,
   })
   status: TaskStatus;
+
+  // 需要额外定义关联字段
+  @Column()
+  userId: string;
+
+  // 虽然能在表中生成userId，但是在代码中只负责关联对象的类型；
+  @ManyToOne(() => User, (user) => user.tasks, { nullable: false })
+  user: User;
+
+  @OneToMany(() => TaskLabel, (label) => label.task, {
+    cascade: true,
+    orphanedRowAction: 'delete',
+  })
+  labels: TaskLabel[];
 }
