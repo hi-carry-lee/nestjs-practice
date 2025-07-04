@@ -54,7 +54,7 @@ const rootConfigSchema = appConfigSchema.concat(dbConfigSchema);
 export class AppModule {}
 
 /*
-SLint报错的原因不是configService.get('database')真的返回了Promise，而是TypeScript类型推断的问题。在不同的上下文中，TypeScript对ConfigService.get()方法的返回类型推断可能不同。
+ESLint报错的原因不是configService.get('database')真的返回了Promise，而是TypeScript类型推断的问题。在不同的上下文中，TypeScript对ConfigService.get()方法的返回类型推断可能不同。
 在useFactory中：TypeScript可能无法准确推断configService.get('database')的具体返回类型，特别是当泛型类型RootConfigType比较复杂时。
 在服务中：上下文更明确，TypeScript能够正确推断返回类型为非Promise值。
 

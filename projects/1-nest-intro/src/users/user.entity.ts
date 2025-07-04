@@ -1,4 +1,4 @@
-import { Task } from 'src/tasks/task.entity';
+import { Task } from 'src/tasks/entity/task.entity';
 import {
   Column,
   CreateDateColumn,

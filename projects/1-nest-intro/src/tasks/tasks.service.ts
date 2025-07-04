@@ -4,9 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { TaskStatus } from './task.model';
-import { CreateTaskDTO } from './create-task.dto';
-import { UpdateTaskDTO } from './update-task.dto';
-import { Task } from './task.entity';
+import { CreateTaskDTO } from './dto/create-task.dto';
+import { UpdateTaskDTO } from './dto/update-task.dto';
+import { Task } from './entity/task.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
 

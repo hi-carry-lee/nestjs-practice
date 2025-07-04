@@ -5,7 +5,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { TaskStatus } from './task.model';
+import { TaskStatus } from '../task.model';
 import { User } from 'src/users/user.entity';
 import { TaskLabel } from './task-label.entity';
 
