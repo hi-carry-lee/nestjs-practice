@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   Put,
+  Query,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -17,14 +18,27 @@ import { UpdateTaskStatusDto } from './dto/update-status.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entity/task.entity';
 import { CreateTaskLabelDto } from './dto/create-task-label.dto';
+import { FindTaskParams } from './dto/find-task.params';
+import { PaginationResp } from 'src/common/pagination.resp';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
   @Get()
-  async findAll(): Promise<Task[]> {
-    return this.tasksService.findAll();
+  async findAll(
+    @Query() filters: FindTaskParams,
+  ): Promise<PaginationResp<Task>> {
+    const [items, total] = await this.tasksService.findAll(filters);
+    return {
+      data: items,
+      meta: {
+        total,
+        ...filters,
+        // offset: pagination.offset,
+        // limit: pagination.limit,
+      },
+    };
   }
 
   @Get(':id')

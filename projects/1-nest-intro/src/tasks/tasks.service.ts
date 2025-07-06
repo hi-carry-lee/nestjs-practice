@@ -14,6 +14,7 @@ import { DataSource } from 'typeorm';
 import { sanitizePatch } from '../utils/helper';
 import { CreateTaskLabelDto } from './dto/create-task-label.dto';
 import { In } from 'typeorm';
+import { FindTaskParams } from './dto/find-task.params';
 
 @Injectable()
 export class TasksService {
@@ -25,8 +26,14 @@ export class TasksService {
     private dataSource: DataSource,
   ) {}
 
-  public async findAll(): Promise<Task[]> {
-    return this.taskRepository.find();
+  public async findAll(filters: FindTaskParams): Promise<[Task[], number]> {
+    console.log(filters);
+    return this.taskRepository.findAndCount({
+      where: { status: filters.status },
+      relations: ['labels'],
+      skip: filters.offset,
+      take: filters.limit,
+    });
   }
 
   public async findOne(id: string): Promise<Task> {
