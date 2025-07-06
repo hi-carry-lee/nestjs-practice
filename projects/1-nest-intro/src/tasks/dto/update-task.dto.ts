@@ -1,12 +1,12 @@
 import { PartialType } from '@nestjs/swagger';
 // import { TaskStatus } from './task.model';
 import { IsNotEmpty, IsString, ValidateIf } from 'class-validator';
-import { CreateTaskDTO } from './create-task.dto';
+import { CreateTaskDto } from './create-task.dto';
 
 // using mapped type
-export class UpdateTaskDTO extends PartialType(CreateTaskDTO) {
+export class UpdateTaskDto extends PartialType(CreateTaskDto) {
   // used to check null value;
-  @ValidateIf((obj: any) => (obj as UpdateTaskDTO).desc !== undefined)
+  @ValidateIf((obj: any) => (obj as UpdateTaskDto).desc !== undefined)
   @IsString()
   @IsNotEmpty()
   desc?: string;

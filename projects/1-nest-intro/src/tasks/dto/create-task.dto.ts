@@ -10,7 +10,7 @@ import {
 import { CreateTaskLabelDto } from './create-task-label.dto';
 import { Type } from 'class-transformer';
 
-export class CreateTaskDTO {
+export class CreateTaskDto {
   @IsNotEmpty()
   @IsUUID()
   userId: string;

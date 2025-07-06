@@ -43,8 +43,8 @@ export class Task {
   user: User;
 
   @OneToMany(() => TaskLabel, (label) => label.task, {
+    // it's not recommended to use it.❌❌
     cascade: true,
-    orphanedRowAction: 'delete',
   })
   labels: TaskLabel[];
 }

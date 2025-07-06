@@ -11,11 +11,12 @@ import {
   Put,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { CreateTaskDTO } from './dto/create-task.dto';
+import { CreateTaskDto } from './dto/create-task.dto';
 import { FindOneParams } from './dto/find-one.param';
 import { UpdateTaskStatusDto } from './dto/update-status.dto';
-import { UpdateTaskDTO } from './dto/update-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entity/task.entity';
+import { CreateTaskLabelDto } from './dto/create-task-label.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -32,8 +33,14 @@ export class TasksController {
     return task;
   }
 
+  @Get('/with-labels/:id')
+  async findOneWithLabels(@Param() params: FindOneParams): Promise<Task> {
+    const task = await this.tasksService.findOneWithLabels(params.id);
+    return task;
+  }
+
   @Post()
-  async createTask(@Body() taskDto: CreateTaskDTO): Promise<Task> {
+  async createTask(@Body() taskDto: CreateTaskDto): Promise<Task> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return this.tasksService.createTask(taskDto);
   }
@@ -51,9 +58,39 @@ export class TasksController {
   async updateTask(
     // in update and patch, id used to be put in the url
     @Param() params: FindOneParams,
-    @Body() body: UpdateTaskDTO,
+    @Body() body: UpdateTaskDto,
   ): Promise<Task> {
     return this.tasksService.updateTask(params.id, body);
+  }
+
+  @Post(':id/labels')
+  async addLabels(
+    // in update and patch, id used to be put in the url
+    @Param() { id }: FindOneParams,
+    @Body() labelDtos: CreateTaskLabelDto[],
+  ): Promise<Task> {
+    const task = await this.tasksService.findOneWithLabels(id);
+    return this.tasksService.addLabels(task, labelDtos);
+  }
+
+  @Post(':id/labels/new')
+  async addLabelsNew(
+    // in update and patch, id used to be put in the url
+    @Param() { id }: FindOneParams,
+    @Body() labelDtos: CreateTaskLabelDto[],
+  ): Promise<Task> {
+    const task = await this.tasksService.findOneWithLabels(id);
+    return this.tasksService.addLabelsNew(task, labelDtos);
+  }
+
+  @Delete(':id/delete-labels')
+  async deleteLabels(
+    // in update and patch, id used to be put in the url
+    @Param() { id }: FindOneParams,
+    @Body() paramLabels: CreateTaskLabelDto[],
+  ): Promise<Task> {
+    const task = await this.tasksService.findOneWithLabels(id);
+    return await this.tasksService.deleteLabels(task.id, paramLabels);
   }
 
   @Delete(':id')

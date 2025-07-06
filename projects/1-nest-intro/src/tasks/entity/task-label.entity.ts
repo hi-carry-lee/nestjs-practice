@@ -33,6 +33,8 @@ export class TaskLabel {
 
   @ManyToOne(() => Task, (task) => task.labels, {
     onDelete: 'CASCADE',
+    // the best practice is not using it;
+    // orphanedRowAction: 'delete',
   })
   task: Task;
 
