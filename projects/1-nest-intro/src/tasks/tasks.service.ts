@@ -10,7 +10,7 @@ import { Task } from './entity/task.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TaskLabel } from './entity/task-label.entity';
-import { DataSource } from 'typeorm';
+import { DataSource, FindOptionsWhere, Like } from 'typeorm';
 import { sanitizePatch } from '../utils/helper';
 import { CreateTaskLabelDto } from './dto/create-task-label.dto';
 import { In } from 'typeorm';
@@ -28,12 +28,57 @@ export class TasksService {
 
   public async findAll(filters: FindTaskParams): Promise<[Task[], number]> {
     console.log(filters);
+
+    // using array to construct OR query
+    const where: FindOptionsWhere<Task>[] = [];
+    if (filters.status) {
+      where.push({ status: filters.status });
+    }
+    if (filters.title?.trim()) {
+      where.push({ title: Like(`%${filters.title}%`) });
+    }
+    if (filters.desc?.trim()) {
+      where.push({ desc: Like(`%${filters.desc}%`) });
+    }
+
     return this.taskRepository.findAndCount({
-      where: { status: filters.status },
+      where,
       relations: ['labels'],
       skip: filters.offset,
       take: filters.limit,
     });
+  }
+
+  public async findWithQueryBuilder(
+    filters: FindTaskParams,
+  ): Promise<[Task[], number]> {
+    const query = this.taskRepository
+      .createQueryBuilder('task')
+      .leftJoinAndSelect('task.labels', 'labels');
+
+    if (filters.status) {
+      query.andWhere('task.status = :status', { status: filters.status });
+    }
+
+    if (filters.title?.trim()) {
+      query.andWhere('(task.title ILIKE :title', {
+        title: `%${filters.title}%`,
+      });
+    }
+
+    if (filters.desc?.trim()) {
+      query.andWhere('(task.desc ILIKE :desc)', { desc: `%${filters.desc}%` });
+    }
+
+    if (filters?.labels.length) {
+      query.andWhere('labels.name IN (:...labelNames)', {
+        labelNames: filters.labels,
+      });
+    }
+
+    query.orderBy(`task.${filters.sortBy}`, filters.sortOrder);
+    query.skip(filters.offset).take(filters.limit);
+    return query.getManyAndCount();
   }
 
   public async findOne(id: string): Promise<Task> {

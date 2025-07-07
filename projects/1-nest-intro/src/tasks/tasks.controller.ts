@@ -34,9 +34,9 @@ export class TasksController {
       data: items,
       meta: {
         total,
-        ...filters,
-        // offset: pagination.offset,
-        // limit: pagination.limit,
+        // ...filters,
+        offset: filters.offset,
+        limit: filters.limit,
       },
     };
   }
