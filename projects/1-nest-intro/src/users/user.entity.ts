@@ -1,4 +1,5 @@
-import { Task } from 'src/tasks/entity/task.entity';
+import { Expose } from 'class-transformer';
+
 import {
   Column,
   CreateDateColumn,
@@ -7,24 +8,39 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Role } from './role.enum';
+import { Task } from 'src/tasks/entity/task.entity';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
+  @Expose()
   id: string;
 
   @Column()
+  @Expose()
   name: string;
 
   @Column()
+  @Expose()
   email: string;
 
-  @OneToMany(() => Task, (task) => task.user)
-  tasks: Task[];
+  @Column()
+  password: string;
 
   @CreateDateColumn()
+  @Expose()
   createdAt: Date;
 
   @UpdateDateColumn()
+  @Expose()
   updatedAt: Date;
+
+  @OneToMany(() => Task, (task) => task.user)
+  @Expose()
+  tasks: Task[];
+
+  @Column('text', { array: true, default: [Role.USER] })
+  @Expose()
+  roles: Role[];
 }

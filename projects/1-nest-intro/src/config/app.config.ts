@@ -7,6 +7,8 @@ export interface AppConfig {
 
 export const appConfigSchema = Joi.object({
   APP_MESSAGE_PREFIX: Joi.string().default('Hello Nestjs '),
+  JWT_SECRET: Joi.string().required(),
+  JWT_EXPIRES_IN: Joi.string().required().default('60m'),
 });
 
 export const appConfig = registerAs(

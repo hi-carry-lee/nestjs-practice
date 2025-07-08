@@ -7,6 +7,7 @@ import { TaskLabel } from './entity/task-label.entity';
 
 @Module({
   imports: [
+    // is essential for dependency injection of TypeORM repositories in the tasks module
     TypeOrmModule.forFeature([Task, TaskLabel]), // 只需要在这里注册
   ],
   controllers: [TasksController],

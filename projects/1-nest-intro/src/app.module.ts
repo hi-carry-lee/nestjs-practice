@@ -8,12 +8,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { appConfig, appConfigSchema } from './config/app.config';
 import { dbConfigSchema, typeOrmConfig } from './config/database.config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-// import { RootConfigType } from './config/config.types';
 import { TypedConfigService } from './config/typed-config.service';
-// import { Task } from './tasks/task.entity';
 import { UsersModule } from './users/users.module';
+import { authConfig, authConfigSchema } from './config/auth.config';
 
-const rootConfigSchema = appConfigSchema.concat(dbConfigSchema);
+const rootConfigSchema = appConfigSchema
+  .concat(dbConfigSchema)
+  .concat(authConfigSchema);
 
 @Module({
   imports: [
@@ -32,13 +33,14 @@ const rootConfigSchema = appConfigSchema.concat(dbConfigSchema);
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, typeOrmConfig],
+      load: [appConfig, typeOrmConfig, authConfig],
       validationSchema: rootConfigSchema,
       validationOptions: {
         allowUnknown: true,
         abortEarly: true,
       },
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [
