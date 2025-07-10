@@ -18,6 +18,8 @@ export const dbConfigSchema = Joi.object({
 export const typeOrmConfig = registerAs(
   'database',
   (): TypeOrmModuleOptions => ({
+    // 通过host, port, username, password, database 这样单独配置的方式连接数据库，
+    // 是 TypeORM 提供一种通用方式，也支持MySQL，MongoDB等其他数据库
     type: 'postgres',
     host: process.env.DB_HOST ?? 'localhost',
     port: parseInt(process.env.DB_PORT ?? '5432'),

@@ -14,6 +14,7 @@ describe('CreateUserDto', () => {
     dto.password = '123456A#';
   });
 
+  // 多个it测试方法，按照定义的顺序执行
   it('should validate complete valid data', async () => {
     // Arrange
     // Act
@@ -28,12 +29,14 @@ describe('CreateUserDto', () => {
     // Act
     const errors = await validate(dto);
     // Assert
+    expect(errors.length).toBe(1);
     // console.log(errors);
-    expect(errors.length).toBeGreaterThan(0);
+    // 下面的判断基于输出的errors信息
     expect(errors[0].property).toBe('email');
     expect(errors[0].constraints).toHaveProperty('isEmail');
   });
 
+  // * the following is a Test-Driven Development (TDD) approach
   const testPassword = async (password: string, message: string) => {
     dto.password = password;
     const errors = await validate(dto);
