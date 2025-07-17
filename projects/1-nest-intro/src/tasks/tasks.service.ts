@@ -95,8 +95,8 @@ export class TasksService {
     return task;
   }
 
-  public async createTask(task: CreateTaskDto): Promise<Task> {
-    return await this.taskRepository.save(task);
+  public async createTask(task: CreateTaskDto, userId: string): Promise<Task> {
+    return await this.taskRepository.save({ ...task, userId });
   }
 
   public async updateTaskStatus(id: string, status: TaskStatus): Promise<Task> {

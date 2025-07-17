@@ -11,9 +11,9 @@ import { CreateTaskLabelDto } from './create-task-label.dto';
 import { Type } from 'class-transformer';
 
 export class CreateTaskDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsUUID()
-  userId: string;
+  userId?: string;
 
   @IsNotEmpty()
   @IsString()

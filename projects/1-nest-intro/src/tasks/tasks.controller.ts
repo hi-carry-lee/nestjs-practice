@@ -20,6 +20,7 @@ import { Task } from './entity/task.entity';
 import { CreateTaskLabelDto } from './dto/create-task-label.dto';
 import { FindTaskParams } from './dto/find-task.params';
 import { PaginationResp } from 'src/common/pagination.resp';
+import { CurrentUserId } from 'src/users/decorators/current-user-id.decorator';
 
 @Controller('tasks')
 export class TasksController {
@@ -54,9 +55,12 @@ export class TasksController {
   }
 
   @Post()
-  async createTask(@Body() taskDto: CreateTaskDto): Promise<Task> {
+  async createTask(
+    @Body() taskDto: CreateTaskDto,
+    @CurrentUserId() userId: string,
+  ): Promise<Task> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return this.tasksService.createTask(taskDto);
+    return this.tasksService.createTask(taskDto, userId);
   }
 
   @Patch(':id/status')
