@@ -48,6 +48,8 @@ export class AuthController {
     return new LoginResponse({ accessToken });
   }
 
+  // * 经过 AuthGuard 的拦截处理，request 中会有 user 字段
+  // * @Request()装饰器：从 NestJS 请求上下文中提取 Express Request 对象
   @Get('/profile')
   async profile(@Request() request: AuthRequest): Promise<User> {
     const user = await this.userService.findOne(request.user.sub);

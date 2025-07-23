@@ -39,11 +39,14 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
+      // * 这里解析出来的 payload 就是 AuthService 中 generateToken 生成的 payload
+      // * 里面包含了 sub、name、roles 字段
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
         secret: this.configService.get<AuthConfig>('auth')?.jwt.secret,
       });
       request.user = payload; // 完全类型安全
     } catch {
+      // * token过期或无效，都会抛出异常
       throw new UnauthorizedException();
     }
 
