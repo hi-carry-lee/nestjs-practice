@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   DefaultValuePipe,
   Get,
@@ -7,9 +8,13 @@ import {
   ParseArrayPipe,
   ParseEnumPipe,
   ParseIntPipe,
+  Post,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { PipeTestService } from './pipe-test.service';
+import { PipeTestDto } from './dto/pipe-test.dto';
+import { MyValidationPipe } from './MyValidationPipe';
 
 enum Ggg {
   A = 'a',
@@ -102,5 +107,31 @@ export class PipeTestController {
     gg: string,
   ) {
     return gg;
+  }
+
+  @Post('hhh')
+  hhh(
+    @Body()
+    obj: PipeTestDto,
+  ) {
+    console.log('json param - obj: ', obj);
+  }
+
+  // 配合dto中的@IsInt校验
+  @Post('jjj')
+  jjj(
+    @Body(new ValidationPipe())
+    obj: PipeTestDto,
+  ) {
+    console.log('json param - obj: ', obj);
+  }
+
+  // 配合dto中的@IsInt校验
+  @Post('kkk')
+  kkk(
+    @Body(new MyValidationPipe())
+    obj: PipeTestDto,
+  ) {
+    console.log('json param - obj: ', obj);
   }
 }
