@@ -1,12 +1,13 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { LogMiddleware } from './log.middleware';
+import { LogMiddleware } from './aop/log.middleware';
 // import { APP_GUARD } from '@nestjs/core';
 // import { GlobalTwoGuard } from './global-two.guard';
+import { PipeTestModule } from './pipe-test/pipe-test.module';
 
 @Module({
-  imports: [],
+  imports: [PipeTestModule],
   controllers: [AppController],
   providers: [
     AppService,

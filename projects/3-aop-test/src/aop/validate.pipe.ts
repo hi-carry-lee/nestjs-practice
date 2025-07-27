@@ -7,7 +7,7 @@ import {
 
 @Injectable()
 export class ValidatePipe implements PipeTransform {
-  transform(value: any, metadata: ArgumentMetadata) {
+  transform(value: string, metadata: ArgumentMetadata) {
     if (Number.isNaN(parseInt(value))) {
       throw new BadRequestException(`参数${metadata.data}错误`);
     }
