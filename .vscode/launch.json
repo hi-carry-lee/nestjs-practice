@@ -296,6 +296,22 @@
       "smartStep": true, // 智能单步执行，跳过生成的代码
       "pauseForSourceMap": false, // 不为源码映射暂停，提高调试启动速度
       "autoAttachChildProcesses": true // 自动附加到子进程，支持调试多进程应用
+    },
+    {
+      "name": "10-book-store-admin",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/projects/10-book-store-admin/src/main.ts",
+      "cwd": "${workspaceFolder}/projects/10-book-store-admin",
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "3000"
+      },
+      "console": "integratedTerminal",
+      "restart": true,
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
     }
   ]
 }
