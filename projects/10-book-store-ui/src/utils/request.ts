@@ -1,4 +1,6 @@
 import axios from "axios";
+import type { CreateBook } from "../pages/BookManage/CreateBookModal";
+import type { UpdateBook } from "../pages/BookManage/UpdateBookModal";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:3000/",
@@ -25,4 +27,20 @@ export async function getBookList(name: string) {
       name,
     },
   });
+}
+
+export async function createBook(book: CreateBook) {
+  return await axiosInstance.post("/book/create", book);
+}
+
+export async function updateBook(book: UpdateBook) {
+  return await axiosInstance.put("/book/update", book);
+}
+
+export async function getBookById(id: number) {
+  return await axiosInstance.get(`/book/${id}`);
+}
+
+export async function deleteBookById(id: number) {
+  return await axiosInstance.delete(`/book/delete/${id}`);
 }

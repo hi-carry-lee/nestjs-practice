@@ -312,6 +312,37 @@
       "restart": true,
       "sourceMaps": true,
       "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    },
+    {
+      "name": "10-book-store-ui",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/projects/10-book-store-ui/src",
+      "sourceMapPathOverrides": {
+        "/@fs/*": "${workspaceFolder}/*",
+        "/src/*": "${webRoot}/*"
+      },
+      "skipFiles": [
+        "<node_internals>/**",
+        "**/node_modules/**",
+        "**/vite/**",
+        "**/react/**",
+        "**/react-dom/**",
+        "**/react-refresh/**",
+        "**/@vitejs/**",
+        "**/esbuild/**",
+        "**/rollup/**",
+        "**/webpack/**",
+        "**/chunk-*.js",
+        "**/vendor-*.js",
+        "**/*.hot-update.js",
+        "**/hot-update.js",
+        "**/@react-refresh/**",
+        "**/react-refresh-runtime/**",
+        "**/react-refresh-dom/**"
+      ],
+      "smartStep": true
     }
   ]
 }
